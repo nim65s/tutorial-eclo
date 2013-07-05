@@ -3,6 +3,8 @@ tutorial-eclo
 
 Tutorial for the eclo greenhouse
 
+NB: this is curruntly a work in progress. A few links may work but are not intended to be definitive.
+
 hardware
 --------
 
@@ -32,13 +34,17 @@ $ grep deviceId /var/log/syslog
 
 Mihini's application
 --------------------
+This program cames from [the Mihini samples from Eclipse’s git repository](http://git.eclipse.org/c/mihini/org.eclipse.mihini.samples.git/), in `greenhouse-m3da/mihini-greenhouse-m3da-demo/src/`
 
 Firstly, you need the application:
 
 ```bash
+$ cd
 $ sudo apt-get install git
 $ git clone https://github.com/nim65s/tutorial-eclo.git
 ```
+
+### Using Lua Development Tools
 
 ### Using the telnet lua console
 
@@ -54,7 +60,6 @@ export LUA_CPATH="/opt/mihini/lua/?.so"
 * Install the application
 
 ```bash
-$ cd
 $ telnet localhost 2000
 ```
 
@@ -68,9 +73,6 @@ $ telnet localhost 2000
 ```bash
 $ tail -f /var/log/syslog
 ```
-
-### OR Using Lua Development Tools
-
 
 AirVantage
 ----------
