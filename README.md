@@ -25,7 +25,7 @@ Raspberry Pi
 * find the deviceId:
 
     ```bash
-    $ grep deviceId /var/log/syslot
+    $ grep deviceId /var/log/syslog
     ```
     => you should find something like `0000000072eb5051`
 
@@ -41,23 +41,23 @@ Firstly, you need the application:
 ### Using the telnet lua console
 
 * write the launcher for this app (an executable called `run`, in `~/tutorial-eclo/tutorial-mihini`):
-    ```bash
+    ```bash  
     #!/bin/sh  
     export LUA_PATH="/opt/mihini/lua/?.lua;/opt/mihini/lua/?/init.lua;?.lua"  
     export LUA_CPATH="/opt/mihini/lua/?.so"  
     /opt/mihini/bin/lua main.lua  
     ```
 * Install the application
-    ```bash
-    $ cd
+    ```bash  
+    $ cd  
     $ telnet localhost 2000
     ```
-    ```lua
-    > appcon = require "agent.appcon"
+    ```lua  
+    > appcon = require "agent.appcon"  
     > = appcon.install("eclo", "/home/pi/tutorial-eclo/tutorial-mihini", true)
     ```
 * check the logs
-    ```bash
+    ```bash  
     $ tail -f /var/log/syslog
     ```
 
