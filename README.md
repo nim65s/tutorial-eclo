@@ -21,7 +21,6 @@ Raspberry Pi
 
 * Follow the [Raspberry Pi's quick start guide](http://www.raspberrypi.org/quick-start-guide)
 * Once you are logged onto your Raspbian, install [Mihini](http://wiki.eclipse.org/Mihini/Install_Mihini#Others)
-* Follow the `tutorial-mihini/README.md`
 * check the airvantage server url, in `/opt/mihini/lua/agent/defaultconfig.lua`, line 27
 * find the deviceId:
 
@@ -29,6 +28,41 @@ Raspberry Pi
     $ grep deviceId /var/log/syslot
     ```
     => you should find something like `0000000072eb5051`
+
+Mihini's application
+--------------------
+
+Firstly, you need the application:
+    ```bash
+    $ sudo apt-get install git  
+    $ git clone https://github.com/nim65s/tutorial-eclo.git
+    ```
+
+### Using the telnet lua console
+
+* write the launcher for this app (an executable called `run`, in `~/tutorial-eclo/tutorial-mihini`):
+    ```bash
+    #!/bin/sh  
+    export LUA_PATH="/opt/mihini/lua/?.lua;/opt/mihini/lua/?/init.lua;?.lua"  
+    export LUA_CPATH="/opt/mihini/lua/?.so"  
+    /opt/mihini/bin/lua main.lua  
+    ```
+* Install the application
+    ```bash
+    $ cd
+    $ telnet localhost 2000
+    ```
+    ```lua
+    > appcon = require "agent.appcon"
+    > = appcon.install("eclo", "/home/pi/tutorial-eclo/tutorial-mihini", true)
+    ```
+* check the logs
+    ```bash
+    $ tail -f /var/log/syslog
+    ```
+
+### OR Using Lua Development Tools
+
 
 AirVantage
 ----------
