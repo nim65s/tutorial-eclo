@@ -35,7 +35,8 @@ AirVantage
 
 * Zip the `tutorial-airvantage/model.app`
     ```bash
-    $ cd tutorial-airvantage  
+    $ cd tutorial-airvantage
+
     $ zip model.app.zip model.app
     ```
 * Create an AirVantage account
