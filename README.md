@@ -9,7 +9,7 @@ hardware
 Arduino
 -------
 
-This program cames from https://github.com/kartben/mihini-greenhouse-demo.
+This program cames from [kartben/mihini-greenhouse-demo](https://github.com/kartben/mihini-greenhouse-demo).
 
 * Download the [arduino IDE](http://arduino.cc/en/Main/Software) and launch it
 * Open the file `tutorial-arduino/SimpleModbusSlaveExample.ino`
@@ -25,7 +25,9 @@ Raspberry Pi
 * check the airvantage server url, in `/opt/mihini/lua/agent/defaultconfig.lua`, line 27
 * find the deviceId:
 
-    $ grep deviceId /var/log/syslog
+    ```bash
+    $ grep /deviceId /var/log/syslot
+    ```
     => 0000000072eb5051
 
 AirVantage
