@@ -3,10 +3,13 @@ tutorial-eclo
 
 Tutorial for the eclo greenhouse
 
-NB: this is curruntly a work in progress. A few links may work but are not intended to be definitive.
+NB: this is currently a work in progress.
+A few links may work but are not intended to be definitive.
 
 hardware
 --------
+
+See Antoine's work.
 
 Arduino
 -------
@@ -22,7 +25,7 @@ Raspberry Pi
 ------------
 
 * Follow the [Raspberry Pi's quick start guide](http://www.raspberrypi.org/quick-start-guide)
-* Once you are logged onto your Raspbian, install [Mihini](http://wiki.eclipse.org/Mihini/Install_Mihini#Others)
+* Once you are logged onto your Raspbian, download and install [Mihini](http://wiki.eclipse.org/Mihini/Install_Mihini#Download) (choose the "armhf" architeckture, and the "deb" package type)
 * check the airvantage server url, in `/opt/mihini/lua/agent/defaultconfig.lua`, line 27
 * find the deviceId:
 
@@ -34,6 +37,7 @@ $ grep deviceId /var/log/syslog
 
 Mihini's application
 --------------------
+
 This program cames from [the Mihini samples from Eclipse’s git repository](http://git.eclipse.org/c/mihini/org.eclipse.mihini.samples.git/), in `greenhouse-m3da/mihini-greenhouse-m3da-demo/src/`
 
 Firstly, you need the application:
@@ -46,7 +50,7 @@ $ git clone https://github.com/nim65s/tutorial-eclo.git
 
 ### Using Lua Development Tools
 
-### Using the telnet lua console
+### OR Using the telnet lua console
 
 * write the launcher for this app (an executable called `run`, in `~/tutorial-eclo/tutorial-mihini`):
 
@@ -87,7 +91,7 @@ $ zip model.app.zip model.app
 * Create an AirVantage account
 * Once you are logged in AirVantage, create a new application and publish it
     * Develop -> My Apps
-    * Release -> Select a File -> model.app.zip -> Start
+    * Release -> Select a File -> `model.app.zip` -> Start
     * Refresh -> Select «My Application» -> Publish -> Publish
 * Then you can add a your Raspberry Pi as a system in your AirVantage's fleet
     * Inventory -> Systems -> Create
