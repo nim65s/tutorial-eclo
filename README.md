@@ -20,7 +20,7 @@ Raspberry Pi
 ------------
 
 * Follow the [Raspberry Pi's quick start guide](http://www.raspberrypi.org/quick-start-guide)
-* Once you are logged onto your Raspbian, install [mihini](http://wiki.eclipse.org/Mihini/Install_Mihini#Others)
+* Once you are logged onto your Raspbian, install [Mihini](http://wiki.eclipse.org/Mihini/Install_Mihini#Others)
 * Follow the `tutorial-mihini/README.md`
 * check the airvantage server url, in `/opt/mihini/lua/agent/defaultconfig.lua`, line 27
 * find the deviceId:
