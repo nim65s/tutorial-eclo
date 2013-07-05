@@ -33,10 +33,10 @@ Mihini's application
 --------------------
 
 Firstly, you need the application:
-    ```bash
-    $ sudo apt-get install git  
-    $ git clone https://github.com/nim65s/tutorial-eclo.git
-    ```
+```bash
+$ sudo apt-get install git
+$ git clone https://github.com/nim65s/tutorial-eclo.git
+```
 
 ### Using the telnet lua console
 
