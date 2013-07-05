@@ -27,12 +27,14 @@ Raspberry Pi
 ```bash
 $ grep deviceId /var/log/syslog
 ```
+
 => you should find something like `0000000072eb5051`
 
 Mihini's application
 --------------------
 
 Firstly, you need the application:
+
 ```bash
 $ sudo apt-get install git
 $ git clone https://github.com/nim65s/tutorial-eclo.git
@@ -41,22 +43,28 @@ $ git clone https://github.com/nim65s/tutorial-eclo.git
 ### Using the telnet lua console
 
 * write the launcher for this app (an executable called `run`, in `~/tutorial-eclo/tutorial-mihini`):
+
 ```bash
 #!/bin/sh
 export LUA_PATH="/opt/mihini/lua/?.lua;/opt/mihini/lua/?/init.lua;?.lua"
 export LUA_CPATH="/opt/mihini/lua/?.so"
 /opt/mihini/bin/lua main.lua
 ```
+
 * Install the application
+
 ```bash
 $ cd
 $ telnet localhost 2000
 ```
+
 ```lua
 > appcon = require "agent.appcon"
 > = appcon.install("eclo", "/home/pi/tutorial-eclo/tutorial-mihini", true)
 ```
+
 * check the logs
+
 ```bash
 $ tail -f /var/log/syslog
 ```
@@ -68,11 +76,12 @@ AirVantage
 ----------
 
 * Zip the `tutorial-airvantage/model.app`
+
 ```bash
 $ cd tutorial-airvantage
-
 $ zip model.app.zip model.app
 ```
+
 * Create an AirVantage account
 * Once you are logged in AirVantage, create a new application and publish it
     * Develop -> My Apps
