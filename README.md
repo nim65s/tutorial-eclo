@@ -79,7 +79,7 @@ $ git clone https://github.com/nim65s/tutorial-eclo.git
 
 ```bash
 #!/bin/sh
-/opt/mihini/bin/lua main.lua
+lua main.lua
 ```
 
 * Install the application
