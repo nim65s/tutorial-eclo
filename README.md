@@ -25,7 +25,7 @@ Raspberry Pi
 ------------
 
 * Follow the [Raspberry Pi's quick start guide](http://www.raspberrypi.org/quick-start-guide)
-* Once you are logged onto your Raspbian, download and install [Mihini](http://wiki.eclipse.org/Mihini/Install_Mihini#Download) (choose the "armhf" architeckture, and the "deb" package type)
+* Once you are logged onto your Raspbian, download and install [Mihini](http://wiki.eclipse.org/Mihini/Install_Mihini#Download) (choose the "armhf" architecture, and the "deb" package type)
 * check the airvantage server url, in `/opt/mihini/lua/agent/defaultconfig.lua`, line 27
 * find the deviceId:
 
@@ -48,15 +48,19 @@ This program cames from [the Mihini samples from Eclipse’s git repository](htt
     * Work with: `http://download.eclipse.org/koneki/updates-nightly`
     * Select the "Mihini Development Tools for Lua"
     * Restart Eclipse if it's recommended
-* Create a the Eclipse's Project
-    * File -> New -> LUA Project
-    * Name it
-    * "Create project at existing location (from existing source)" -> select the `tutorial-mihini` folder
 * Configure the connection to your Raspberry Pi
     * Open the perspective "Remote System explorer"
     * "Define a connection to remote system" -> "Mihini Device"
     * Fill the "Host name" with your Raspberry Pi's IP address, and "Finish"
     * Right clic on "Applications", then "Connect…", and fill your credential (user: `pi` & password: `raspberry`)
+* Create a the Eclipse's Project
+    * Get back to the Lua Perspective
+    * File -> New -> LUA Project
+    * Name it, with only ASCII letters, digits and "_"
+    * "Create project at existing location (from existing source)" -> select the `tutorial-mihini` folder
+* Install your Project on you Raspberry Pi
+    * Right-click on your application Export -> Mihini -> Lua Application Package
+    * give it a Version
 
 
 For more details, see the [official LDT's User guide](http://wiki.eclipse.org/Koneki/LDT/Developer_Area/User_Guides/User_Guide_1.0#Remote_session)
