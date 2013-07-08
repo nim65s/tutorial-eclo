@@ -24,7 +24,7 @@ This program cames from [kartben/mihini-greenhouse-demo](https://github.com/kart
 Raspberry Pi
 ------------
 
-* Follow the [Raspberry Pi's quick start guide](http://www.raspberrypi.org/quick-start-guide)
+* Follow the [Raspberry Pi's quick start guide](http://www.raspberrypi.org/quick-start-guide) and choose a Raspbian in the NOOBS screen
 * Once you are logged onto your Raspbian, download and install [Mihini](http://wiki.eclipse.org/Mihini/Install_Mihini#Download) (choose the "armhf" architecture, and the "deb" package type)
 * check the airvantage server url, in `/opt/mihini/lua/agent/defaultconfig.lua`, line 27
 * find the deviceId:
@@ -42,7 +42,7 @@ This program cames from [the Mihini samples from Eclipse’s git repository](htt
 
 ### Using Lua Development Tools
 
-* Download and launch [LDT](http://www.eclipse.org/koneki/ldt/#installation)
+* On your Desktop computer, download and launch [LDT](http://www.eclipse.org/koneki/ldt/#installation)
 * Install the Mihini Development Tools
     * Help -> Install new software
     * Work with: `http://download.eclipse.org/koneki/updates-nightly`
@@ -79,8 +79,6 @@ $ git clone https://github.com/nim65s/tutorial-eclo.git
 
 ```bash
 #!/bin/sh
-export LUA_PATH="/opt/mihini/lua/?.lua;/opt/mihini/lua/?/init.lua;?.lua"
-export LUA_CPATH="/opt/mihini/lua/?.so"
 /opt/mihini/bin/lua main.lua
 ```
 
@@ -115,7 +113,7 @@ $ zip model.app.zip model.app
 * Once you are logged in AirVantage, create a new application and publish it
     * Develop -> My Apps
     * Release -> Select a File -> `model.app.zip` -> Start
-    * Refresh -> Select «My Application» -> Publish -> Publish
+    * Refresh -> Select "My Application" -> Publish -> Publish
 * Then you can add a your Raspberry Pi as a system in your AirVantage's fleet
     * Inventory -> Systems -> Create
     * Give it a name
