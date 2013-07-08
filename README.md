@@ -62,6 +62,11 @@ This program cames from [the Mihini samples from Eclipse’s git repository](htt
     * Right-click on your application Export -> Mihini -> Lua Application Package
     * give it a Version
 
+* Checks the log on your Raspbian
+
+```bash
+$ tail -f /var/log/syslog
+```
 
 For more details, see the [official LDT's User guide](http://wiki.eclipse.org/Koneki/LDT/Developer_Area/User_Guides/User_Guide_1.0#Remote_session)
 
