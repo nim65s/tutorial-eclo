@@ -115,7 +115,7 @@ sample
                 runnable        true
 ```
 
-**Notice** `CTRL-D` to quit.
+**Notice**: `CTRL-D` to quit.
 
 * check the logs
 
@@ -123,7 +123,7 @@ sample
 $ tail -f /var/log/syslog
 ```
 
-**Notice** `CTRL-C` to quit.
+**Notice**: `CTRL-C` to quit.
 
 AirVantage
 ----------
