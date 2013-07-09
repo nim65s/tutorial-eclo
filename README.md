@@ -98,6 +98,23 @@ $ telnet localhost 2000
 > = appcon.install("eclo", "/home/pi/tutorial-eclo/tutorial-mihini", true)
 ```
 
+We can check that the application is properly installed
+
+```lua
+> for app, t in pairs(appcon.list()) do
+     print( app )
+     for field, data in pairs(t) do
+         print("\t", field, data)
+     end
+end
+```
+
+```lua
+sample
+                autostart       true
+                runnable        true
+```
+
 * check the logs
 
 ```bash
