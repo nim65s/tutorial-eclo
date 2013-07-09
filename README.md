@@ -115,11 +115,15 @@ sample
                 runnable        true
 ```
 
+**Notice** `CTRL-D` to quit.
+
 * check the logs
 
 ```bash
 $ tail -f /var/log/syslog
 ```
+
+**Notice** `CTRL-C` to quit.
 
 AirVantage
 ----------
