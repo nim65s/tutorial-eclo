@@ -59,7 +59,9 @@ void loop()
 
   // servo
   holdingRegs[3] = myservo.read();
+  delay(10);
   myservo.write(holdingRegs[4]);
+  delay(10);
 }
 
 // vim:set ft=c:

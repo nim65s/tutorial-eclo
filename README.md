@@ -59,7 +59,7 @@ This program cames from [the Mihini samples from Eclipse’s git repository](htt
     * Name it, with only ASCII letters, digits and "_"
     * "Create project at existing location (from existing source)" -> select the `tutorial\_mihini` folder
 * Install your Project on you Raspberry Pi
-    * Right-click on your application Export -> Mihini -> Lua Application Package
+    * Right-click on your application -> Export -> Mihini -> Lua Application Package
     * give it a Version
 
 * Checks the log on your Raspbian
