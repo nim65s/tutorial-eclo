@@ -17,7 +17,7 @@ Arduino
 This program cames from [kartben/mihini-greenhouse-demo](https://github.com/kartben/mihini-greenhouse-demo).
 
 * Download the [arduino IDE](http://arduino.cc/en/Main/Software) and launch it
-* Open the file `tutorial-arduino/SimpleModbusSlaveExample.ino`
+* Open the file `tutorial\_arduino/tutorial\_arduion.ino`
 * Download the [SimpleModbusSlave](https://code.google.com/p/simple-modbus/downloads/detail?name=SimpleModbusSlaveV4.zip&can=2&q=) library, and [install](http://arduino.cc/en/Guide/Libraries) it.
 * Connect your Arduino in USB and flash it
 
@@ -57,7 +57,7 @@ This program cames from [the Mihini samples from Eclipse’s git repository](htt
     * Get back to the Lua Perspective
     * File -> New -> LUA Project
     * Name it, with only ASCII letters, digits and "_"
-    * "Create project at existing location (from existing source)" -> select the `tutorial-mihini` folder
+    * "Create project at existing location (from existing source)" -> select the `tutorial\_mihini` folder
 * Install your Project on you Raspberry Pi
     * Right-click on your application Export -> Mihini -> Lua Application Package
     * give it a Version
@@ -77,10 +77,10 @@ For more details, see the [official LDT's User guide](http://wiki.eclipse.org/Ko
 ```bash
 $ cd
 $ sudo apt-get install git
-$ git clone https://github.com/nim65s/tutorial-eclo.git
+$ git clone https://github.com/nim65s/tutorial\_eclo.git
 ```
 
-* write the launcher for this app (an executable called `run`, in `~/tutorial-eclo/tutorial-mihini`):
+* write the launcher for this app (an executable called `run`, in `~/tutorial-eclo/tutorial\_mihini`):
 
 ```bash
 #!/bin/sh
@@ -95,7 +95,7 @@ $ telnet localhost 2000
 
 ```lua
 > appcon = require "agent.appcon"
-> = appcon.install("eclo", "/home/pi/tutorial-eclo/tutorial-mihini", true)
+> = appcon.install("eclo", "/home/pi/tutorial-eclo/tutorial\_mihini", true)
 ```
 
 We can check that the application is properly installed
@@ -128,10 +128,10 @@ $ tail -f /var/log/syslog
 AirVantage
 ----------
 
-* Zip the `tutorial-airvantage/model.app`
+* Zip the `tutorial\_airvantage/model.app`
 
 ```bash
-$ cd tutorial-airvantage
+$ cd tutorial\_airvantage
 $ zip model.app.zip model.app
 ```
 
