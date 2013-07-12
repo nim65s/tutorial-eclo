@@ -1,5 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><app:application xmlns:app="http://www.sierrawireless.com/airvantage/application/1.0" name="eclo" revision="0.1" type="tutorial_eclo">
+<?xml version="1.0" encoding="UTF-8"?><app:application xmlns:app="http://www.sierrawireless.com/airvantage/application/1.0" name="eclo" revision="0.4" type="tutorial_eclo">
   <capabilities>
+    <communication>
+      <protocol comm-id="SERIAL" type="M3DA">
+        <parameter name="authentication" value="none"/>
+        <parameter name="cipher" value="none"/>
+      </protocol>
+    </communication>
     <data>
       <encoding type="M3DA">
         <asset default-label="tutorial_eclo" id="greenhouse">
