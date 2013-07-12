@@ -32,6 +32,7 @@ unsigned int holdingRegs[TOTAL_REGS_SIZE]; // function 3 and 16 register array
 void setup()
 {
   myservo.attach(13); // The servo is on the pin 13
+  myservo.write(0);
 
   // setup the serial link and the modbus lib
   Serial.begin(9600);
