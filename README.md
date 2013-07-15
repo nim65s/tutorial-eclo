@@ -123,11 +123,11 @@ $ tar cvf tutorial_mihini.tar tutorial_mihini
 $ mv tutorial_mihini.tar tutorial_airvantage
 ```
 
-* Zip the `tutorial_airvantage/model.app`
+* Zip the application
 
 ```bash
 $ cd tutorial_airvantage
-$ zip model.app.zip model.app
+$ zip model.app.zip model.app tutorial_mihini.tar
 ```
 
 * Create an AirVantage Trial account on the [Sierra Wireless' Developer Zone](http://developer.sierrawireless.com/Cloud%20Platform.aspx)
@@ -148,3 +148,53 @@ $ zip model.app.zip model.app
     * Monitor -> Systems
     * Select your system -> Details
     * History
+
+REST API
+--------
+
+This is a sample in Python of the usage of the API documented in AirVantage -> Develop -> API documentation
+
+* Firstly, you will need an API key:
+    * In AirVantage, Develop -> API clients -> Create -> give it a name
+* Then you will have to get an `access_token`. There are three methods, I will use the easiest:
+
+```python
+#!/usr/bin/python
+import json
+import urllib
+
+SERVER_URL = 'http://edge.m2mop.net'
+USERNAME = 'eclo.demo@gmail.com'
+PASSWORD = 'eclo-live2013!'
+CLIENT_ID = 'eabea6f63e8346ceb8c4016f8e0f2740'
+CLIENT_SECRET = '54f40d77bbe348cb9e8b274fa25625ba'
+AGENT_ID = 'RPI000000006f257df2'
+
+access_url = '%s/api/oauth/token?grant_type=password&username=%s&password=%s&client_id=%s&client_secret=%s' % (SERVER_URL, USERNAME, PASSWORD, CLIENT_ID, CLIENT_SECRET)
+access_token = json.loads(urllib.urlopen(access_url).read())['access_token']
+```
+* Once your credentials are corrects, you will need your system's uid
+
+```python
+uid_url = '%s/api/v1/systems?access_token=%s' % (SERVER_URL, access_token)
+uid = json.loads(urllib.urlopen(uid_url).read())['items'][0]['uid']
+```
+
+* Now, with this uid, you can get your data:
+
+```python
+data_url = '%s/api/v1/systems/%s/data?access_token=%s' % (SERVER_URL, uid, access_token)
+```
+
+* Or even the history of these data:
+
+```python
+luminosity_history_url = '%s/api/v1/systems/%s/data/greenhouse.data.luminosity/raw?access_token=%s' % (SERVER_URL, uid, access_token)
+```
+
+NB: you can get the date from the `timestamp` with
+
+```python
+from datetime import datetime
+dt = datetime.fromtimestamp(timestamp/1000)
+```
