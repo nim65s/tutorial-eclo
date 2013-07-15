@@ -163,32 +163,33 @@ This is a sample in Python of the usage of the API documented in AirVantage -> D
 import json
 import urllib
 
-SERVER_URL = 'http://edge.m2mop.net'
+SERVER_URL = 'http://edge.m2mop.net/'
 USERNAME = 'eclo.demo@gmail.com'
 PASSWORD = 'eclo-live2013!'
 CLIENT_ID = 'eabea6f63e8346ceb8c4016f8e0f2740'
 CLIENT_SECRET = '54f40d77bbe348cb9e8b274fa25625ba'
 
-access_url = '%s/api/oauth/token?grant_type=password&username=%s&password=%s&client_id=%s&client_secret=%s' % (SERVER_URL, USERNAME, PASSWORD, CLIENT_ID, CLIENT_SECRET)
-access_token = json.loads(urllib.urlopen(access_url).read())['access_token']
+access_url = 'api/oauth/token?grant_type=password&username=%s&password=%s&client_id=%s&client_secret=%s' % (USERNAME, PASSWORD, CLIENT_ID, CLIENT_SECRET)
+access_token = json.loads(urllib.urlopen(SERVER_URL + access_url).read())['access_token']
+access_token_url = '?access_token=' + access_token
 ```
 * Once your credentials are corrects, you will need your system's uid
 
 ```python
-uid_url = '%s/api/v1/systems?access_token=%s' % (SERVER_URL, access_token)
-uid = json.loads(urllib.urlopen(uid_url).read())['items'][0]['uid']
+uid_url = 'api/v1/systems'
+uid = json.loads(urllib.urlopen(SERVER_URL + uid_url + access_token_url).read())['items'][0]['uid']
 ```
 
 * Now, with this uid, you can get your data:
 
 ```python
-data_url = '%s/api/v1/systems/%s/data?access_token=%s' % (SERVER_URL, uid, access_token)
+data_url = 'api/v1/systems/%s/data' % uid
 ```
 
 * Or even the history of these data:
 
 ```python
-luminosity_history_url = '%s/api/v1/systems/%s/data/greenhouse.data.luminosity/raw?access_token=%s' % (SERVER_URL, uid, access_token)
+luminosity_history_url = 'api/v1/systems/%s/data/greenhouse.data.luminosity/raw' % uid
 ```
 
 NB: you can get the date from the `timestamp` with
