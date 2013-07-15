@@ -15,7 +15,6 @@
 -- REQUIRES
 -- ----------------------------------------------------------------------------
 
-local devicetree = require 'devicetree'
 local sched  = require 'sched'
 local modbus = require 'modbus'
 -- Modbus Stub module to test the demo without modbus device.
@@ -165,16 +164,19 @@ local function main()
     av_asset = assert(airvantage.newasset(AV_ASSET_ID))
     av_asset.tree.commands.__default= process_commands
     assert(av_asset:start())
-    --devicetree.init()
-    --devicetree.set("config.data.policy.everyminute", {period=60})
-    --devicetree.set("config.data.policy.every15minutes", {period=15*60})
-    av_table = av_asset :newTable('rawdata', {'temperature', 'luminosity', 'humidity', 'servo'}, 'ram', 'never')
-    local err
-    av_table_consolidated, err = av_table :newConsolidation('data', { temperature='mean', luminosity='mean', humidity='mean', servo='last'}, 'ram', 'hourly', 'daily')
 
     log(LOG_NAME, "INFO", "Mihini asset - OK")
 
-    if not av_table_consolidated then log(LOG_NAME, "ERROR", err) end
+    av_table = av_asset :newTable('rawdata', {'temperature', 'luminosity', 'humidity', 'servo'}, 'ram', 'never')
+    local err
+    av_table_consolidated, err = av_table :newConsolidation('data', { temperature='mean', luminosity='mean', humidity='mean', servo='last'}, 'ram', 'everyminute', 'every15minutes')
+
+
+    if not av_table_consolidated then
+        log(LOG_NAME, "ERROR", err)
+    else
+        log(LOG_NAME, "INFO", "Mihini table_consolidated - OK")
+    end
 
     log(LOG_NAME, "INFO", "Init done")
 

@@ -14,6 +14,7 @@
             <variable default-label="Luminosity (Lux)" path="luminosity" type="double"/>
             <variable default-label="Humidity (%)" path="humidity" type="double"/>
             <variable default-label="Opening (°)" path="servo" type="double"/>
+            <variable default-label="Button" path="btn" type="int"/>
             <command default-label="Open" path="servoCommand">
               <description>Give an opening angle to the roof, from 0° for closed to 100° to opened.</description>
               <parameter default-label="Requested state of roof." default-value="0" id="servoCommand" type="int">
