@@ -14,8 +14,9 @@ enum
   TEMPERATURE,  // @ 0
   LUMINOSITY,   // @ 1
   HUMIDITY,     // @ 2
-  SERVOANGLE,   // @ 3
-  SERVOCOMMAND, // @ 4
+  BUTTON,       // @ 3
+  SERVOANGLE,   // @ 4
+  SERVOCOMMAND, // @ 5
 
   TOTAL_ERRORS,
   // leave this one
@@ -58,10 +59,13 @@ void loop()
     delay(10);
   }
 
+  // Button
+  holdingRegs[3] = (digitalRead(12) == HIGH);
+
   // servo
-  holdingRegs[3] = myservo.read();
+  holdingRegs[4] = myservo.read();
   delay(10);
-  myservo.write(holdingRegs[4]);
+  myservo.write(holdingRegs[5]);
   delay(10);
 }
 

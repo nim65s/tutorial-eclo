@@ -15,6 +15,7 @@
 -- REQUIRES
 -- ----------------------------------------------------------------------------
 
+local devicetree = require 'devicetree'
 local sched  = require 'sched'
 local modbus = require 'modbus'
 -- Modbus Stub module to test the demo without modbus device.
@@ -37,6 +38,8 @@ local LOG_NAME = "GREENHOUSE_APP"
 local modbus_client = modbus.new(MODBUS_PORT, MODBUS_CONF)
 local modbus_client_pending_init = false
 local av_asset
+local av_table
+local av_table_consolidated
 
 -- ----------------------------------------------------------------------------
 -- DATA
@@ -45,18 +48,20 @@ local modbus_data_address = {
     temperature = 0,
     luminosity  = 1,
     humidity    = 2,
-    servo       = 3
+    btn         = 3,
+    servo       = 4,
 }
 local modbus_data_process = {
     temperature = utils.processTemperature,
     luminosity  = utils.processLuminosity,
     humidity    = utils.processHumidity,
+    btn         = utils.identity,
     servo       = utils.identity,
 }
 setmetatable(modbus_data_process, {__index = function (_, _) return utils.identity end})
 
 local modbus_command_address = {
-    servoCommand = 4,
+    servoCommand = 5,
 }
 local modbus_command_process = {
     servoCommand = utils.identity,
@@ -106,11 +111,19 @@ local function process_modbus ()
         buffer[data] = val
     end
 
+    if buffer[btn] == 1 then
+        log(LOG_NAME, 'INFO', "Button pushed ; Sending to Server. Date=%s", tostring(buffer.timestamp))
+        av_asset :pushdata ('data', buffer, 'now')
+    end
+
     -- Send data to Server
     if next(buffer) then
         buffer.timestamp=os.time()*1000
-        log(LOG_NAME, 'INFO', "Sending to Server. Date=%s", tostring(buffer.timestamp))
-        av_asset :pushdata ('data', buffer, 'now')
+        --log(LOG_NAME, 'INFO', "Sending to Server. Date=%s", tostring(buffer.timestamp))
+        --av_asset :pushdata ('data', buffer, 'now')
+        log(LOG_NAME, 'INFO', "Adding Row. Date=%s", tostring(buffer.timestamp))
+        av_table_consolidated :pushRow(buffer)
+        log(LOG_NAME, 'INFO', "Added Row. Ou pas. Date=%s", tostring(buffer.timestamp))
     end
 end
 
@@ -152,8 +165,16 @@ local function main()
     av_asset = assert(airvantage.newasset(AV_ASSET_ID))
     av_asset.tree.commands.__default= process_commands
     assert(av_asset:start())
+    --devicetree.init()
+    --devicetree.set("config.data.policy.everyminute", {period=60})
+    --devicetree.set("config.data.policy.every15minutes", {period=15*60})
+    av_table = av_asset :newTable('rawdata', {'temperature', 'luminosity', 'humidity', 'servo'}, 'ram', 'never')
+    local err
+    av_table_consolidated, err = av_table :newConsolidation('data', { temperature='mean', luminosity='mean', humidity='mean', servo='last'}, 'ram', 'hourly', 'daily')
 
     log(LOG_NAME, "INFO", "Mihini asset - OK")
+
+    if not av_table_consolidated then log(LOG_NAME, "ERROR", err) end
 
     log(LOG_NAME, "INFO", "Init done")
 
