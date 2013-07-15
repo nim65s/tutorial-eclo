@@ -168,7 +168,6 @@ USERNAME = 'eclo.demo@gmail.com'
 PASSWORD = 'eclo-live2013!'
 CLIENT_ID = 'eabea6f63e8346ceb8c4016f8e0f2740'
 CLIENT_SECRET = '54f40d77bbe348cb9e8b274fa25625ba'
-AGENT_ID = 'RPI000000006f257df2'
 
 access_url = '%s/api/oauth/token?grant_type=password&username=%s&password=%s&client_id=%s&client_secret=%s' % (SERVER_URL, USERNAME, PASSWORD, CLIENT_ID, CLIENT_SECRET)
 access_token = json.loads(urllib.urlopen(access_url).read())['access_token']
