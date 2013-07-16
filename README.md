@@ -114,6 +114,14 @@ $ tail -f /var/log/syslog
 
 **Notice**: `CTRL-C` to quit.
 
+### Consolidation & Send Policies ###
+
+In the M2M world, communications are expensive, so we try to send consolidated data, and to send those consolidated datas with a period which fits our wallet.
+
+That's why in this sample, the Arduino get the sensors value at a high frequency (every 50ms), but Mihini get those values slower (every 10s), then consolidate (average, most of the time) them every minute, and then send them to the server every 15 minutes.
+
+But of course, you don't want to wait 15 minutes to see your data on the cloud, so we gave you a button to send the data in the 10s needed by Mihini to get them.
+
 AirVantage
 ----------
 * Add the tarball of `tutorial_mihini` to `tutorial_airvantage`:
