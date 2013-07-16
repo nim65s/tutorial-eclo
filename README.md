@@ -152,7 +152,8 @@ $ zip model.app.zip model.app tutorial_mihini.tar
 REST API
 --------
 
-This is a sample in Python of the usage of the API documented in AirVantage -> Develop -> API documentation
+This is a sample in Python of the usage of the API documented in AirVantage -> Develop -> API documentation.
+It is based on the [Request Library](http://docs.python-requests.org/en/latest/), which can be installed with `pip install requests`.
 
 * Firstly, you will need an API key:
     * In AirVantage, Develop -> API clients -> Create -> give it a name
