@@ -61,9 +61,11 @@ setmetatable(modbus_data_process, {__index = function (_, _) return utils.identi
 
 local modbus_command_address = {
     servoCommand = 5,
+    data = 5,
 }
 local modbus_command_process = {
     servoCommand = utils.identity,
+    data = utils.processServoCommand,
 }
 
 -- ----------------------------------------------------------------------------
@@ -110,7 +112,7 @@ local function process_modbus ()
         buffer[data] = val
     end
 
-    if buffer[btn] == 1 then
+    if buffer['btn'] == 1 then
         log(LOG_NAME, 'INFO', "Button pushed ; Sending to Server. Date=%s", tostring(buffer.timestamp))
         av_asset :pushdata ('data', buffer, 'now')
     end
@@ -122,7 +124,7 @@ local function process_modbus ()
         --av_asset :pushdata ('data', buffer, 'now')
         log(LOG_NAME, 'INFO', "Adding Row. Date=%s", tostring(buffer.timestamp))
         av_table_consolidated :pushRow(buffer)
-        log(LOG_NAME, 'INFO', "Added Row. Ou pas. Date=%s", tostring(buffer.timestamp))
+        log(LOG_NAME, 'INFO', "Added Row. Date=%s", tostring(buffer.timestamp))
     end
 end
 

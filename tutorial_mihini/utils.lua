@@ -104,4 +104,13 @@ function t.processSwitchLight(value)
 	if value and value[1] then return 1 else return 0 end 
 end
 
+-------------------------------------------------------------------------------
+-- @function [parent=#utils] processServoCommand
+-- @param  #table value
+-- @return #number
+function t.processServoCommand(value)
+	return value['servoCommand']['servoCommand']
+end
+
+
 return t

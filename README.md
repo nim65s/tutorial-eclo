@@ -190,7 +190,7 @@ data_url = 'api/v1/systems/%s/data' % sys_uid
 * Or even the history of these data:
 
 ```python
-luminosity_history_url = 'api/v1/systems/%s/data/greenhouse.data.luminosity/raw' % uid
+luminosity_history_url = 'api/v1/systems/%s/data/greenhouse.data.luminosity/raw' % sys_uid
 ```
 
 NB: you can get the date from the `timestamp` with
@@ -211,7 +211,7 @@ app_uid = requests.get(SERVER_URL + 'api/v1/applications', params=params).json()
 * Then create a json-serialized dict with the data you want to POST:
 
 ```python
-json.dumps({
+data = json.dumps({
     "application" : { "uid": app_uid },
     "systems" : { "uids": [sys_uid] },
     "commandId": "greenhouse.data.servoCommand",
