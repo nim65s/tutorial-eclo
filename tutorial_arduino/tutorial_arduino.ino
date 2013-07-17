@@ -60,7 +60,7 @@ void loop()
   }
 
   // Button
-  holdingRegs[3] = (digitalRead(12) == HIGH);
+  if (digitalRead(12) == HIGH) holdingRegs[3] = 1;
 
   // servo
   holdingRegs[4] = myservo.read();

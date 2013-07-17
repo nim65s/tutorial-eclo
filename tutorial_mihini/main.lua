@@ -115,6 +115,7 @@ local function process_modbus ()
     if buffer['btn'] == 1 then
         log(LOG_NAME, 'INFO', "Button pushed ; Sending to Server. Date=%s", tostring(buffer.timestamp))
         av_asset :pushdata ('data', buffer, 'now')
+        modbus_client:writeMultipleRegisters (1, modbus_data_address['btn'], string.pack('h',0))
     end
 
     -- Send data to Server
@@ -123,7 +124,7 @@ local function process_modbus ()
         --log(LOG_NAME, 'INFO', "Sending to Server. Date=%s", tostring(buffer.timestamp))
         --av_asset :pushdata ('data', buffer, 'now')
         log(LOG_NAME, 'INFO', "Adding Row. Date=%s", tostring(buffer.timestamp))
-        av_table_consolidated :pushRow(buffer)
+        av_table :pushRow(buffer)
         log(LOG_NAME, 'INFO', "Added Row. Date=%s", tostring(buffer.timestamp))
     end
 end
