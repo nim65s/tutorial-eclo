@@ -247,6 +247,7 @@ print response.json()
 ```
 
 * In this application, you can also change the parameters which govern the auto-adjust equation of the roof:
+
 ```python
 if autoAdjust:
     roof = servoCommand
