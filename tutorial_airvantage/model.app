@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><app:application xmlns:app="http://www.sierrawireless.com/airvantage/application/1.0" name="eclo" revision="0.4" type="tutorial_eclo">
+<?xml version="1.0" encoding="UTF-8"?><app:application xmlns:app="http://www.sierrawireless.com/airvantage/application/1.0" name="eclo" revision="0.8" type="tutorial_eclo">
   <capabilities>
     <communication>
       <protocol comm-id="SERIAL" type="M3DA">
@@ -14,14 +14,21 @@
             <variable default-label="Luminosity (Lux)" path="luminosity" type="double"/>
             <variable default-label="Humidity (%)" path="humidity" type="double"/>
             <variable default-label="Opening (°)" path="servo" type="double"/>
-            <variable default-label="Button" path="btn" type="int"/>
-            <command default-label="Open" path="servoCommand">
-              <description>Give an opening angle to the roof, from 0° for closed to 100° to opened.</description>
-              <parameter default-label="Requested state of roof." default-value="0" id="servoCommand" type="int">
-                <constraints>
-                  <bounds min="0" max="100"/>
-                </constraints>
+            <variable default-label="Button" path="btn" type="boolean"/>
+            <command default-label="Roof" path="roof">
+              <description>Give an opening angle to the roof, from 0° for closed to 100° to opened, or let it manage itself its opening.</description>
+              <parameter default-label="Opening" default-value="0" id="servoCommand" type="int">
+                <constraints><bounds min="0" max="100"/></constraints>
               </parameter>
+              <parameter default-label="Auto-adjust" default-value="true" id="autoAdjust" type="boolean" />
+              <parameter default-label="Auto-adjust's offset" default-value="0" id="adjustOffset" type="double" />
+              <parameter default-label="Auto-adjust's temperature coef" default-value="1" id="adjustTemp" type="double" />
+              <parameter default-label="Auto-adjust's luminosity coef" default-value="1" id="adjustLum" type="double" />
+              <parameter default-label="Auto-adjust's humidity coef" default-value="1" id="adjustHum" type="double" />
+            </command>
+            <command default-label="Consolidate" path="consolidate">
+              <description>Does the system has to send its data every 10 seconds or should it consolidate theme every minute and send them every 15 minutes ?</description>
+              <parameter default-label="Consolidate" default-value="false" id="consolidate" type="boolean" />
             </command>
           </node>
         </asset>
