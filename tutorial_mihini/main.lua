@@ -113,6 +113,7 @@ local function process_modbus ()
     end
 
     if buffer['btn'] == 1 then
+        buffer.timestamp=os.time()*1000
         log(LOG_NAME, 'INFO', "Button pushed ; Sending to Server. Date=%s", tostring(buffer.timestamp))
         av_asset :pushdata ('data', buffer, 'now')
         modbus_client:writeMultipleRegisters (1, modbus_data_address['btn'], string.pack('h',0))
@@ -170,9 +171,9 @@ local function main()
 
     log(LOG_NAME, "INFO", "Mihini asset - OK")
 
-    av_table = av_asset :newTable('rawdata', {'temperature', 'luminosity', 'humidity', 'servo'}, 'ram', 'never')
+    av_table = av_asset :newTable('rawdata', {'timestamp', 'temperature', 'luminosity', 'humidity', 'servo'}, 'file', 'never')
     local err
-    av_table_consolidated, err = av_table :newConsolidation('data', { temperature='mean', luminosity='mean', humidity='mean', servo='last'}, 'ram', 'everyminute', 'every15minutes')
+    av_table_consolidated, err = av_table :newConsolidation('data', { timestamp='median', temperature='mean', luminosity='mean', humidity='mean', servo='last'}, 'file', 'everyminute', 'every15minutes')
 
 
     if not av_table_consolidated then
