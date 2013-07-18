@@ -30,6 +30,11 @@ local AV_ASSET_ID = "greenhouse"
 local MODBUS_PORT = "/dev/ttyACM0" -- serial port on RaspPi
 local MODBUS_CONF = {baudRate = 9600}
 local LOG_NAME = "GREENHOUSE_APP"
+local CONSOLIDATE = false
+local AUTO_ADJUST_ROOF = true -- TODO: Load from persist
+local AUTO_ADJUST_OFFSET = 0 -- TODO: Load from persist
+local AUTO_ADJUST_COEF_TEMP = 1 -- TODO: Load from persist
+local AUTO_ADJUST_COEF_LUM = 1 -- TODO: Load from persist
 
 -- ----------------------------------------------------------------------------
 -- ENVIRONMENT VARIABLES
@@ -43,6 +48,13 @@ local av_table_consolidated
 -- ----------------------------------------------------------------------------
 -- DATA
 -- ----------------------------------------------------------------------------
+local modbus_data_values = {
+    temperature = 0, -- TODO: Load from persist
+    luminosity  = 0, -- TODO: Load from persist
+    humidity    = 0, -- TODO: Load from persist
+    btn         = 0, -- TODO: Load from persist
+    servo       = 0, -- TODO: Load from persist
+}
 local modbus_data_address = {
     temperature = 0,
     luminosity  = 1,
@@ -109,6 +121,7 @@ local function process_modbus ()
         sval = utils.convertRegister(values, address)
         val = modbus_data_process[data](sval)
         log(LOG_NAME, "INFO", "Read from modbus %s : (%s, %s).", data, tostring(val), tostring(sval))
+        modbus_data_values[data] = val
         buffer[data] = val
     end
 
@@ -122,15 +135,17 @@ local function process_modbus ()
     -- Send data to Server
     if next(buffer) then
         buffer.timestamp=os.time()*1000
-        --log(LOG_NAME, 'INFO', "Sending to Server. Date=%s", tostring(buffer.timestamp))
-        --av_asset :pushdata ('data', buffer, 'now')
-        log(LOG_NAME, 'INFO', "Adding Row. Date=%s", tostring(buffer.timestamp))
-        av_table :pushRow(buffer)
-        log(LOG_NAME, 'INFO', "Added Row. Date=%s", tostring(buffer.timestamp))
+        if CONSOLIDATE then
+            log(LOG_NAME, 'INFO', "Adding Row. Date=%s", tostring(buffer.timestamp))
+            av_table :pushRow(buffer)
+        else
+            log(LOG_NAME, 'INFO', "Sending to Server. Date=%s", tostring(buffer.timestamp))
+            av_asset :pushdata ('data', buffer, 'now')
+        end
     end
 end
 
---- Reacts to a request from AirVantage to toggle the switch
+--- Reacts to a request from AirVantage
 local function process_commands(asset, data, path)
     for commandid,commanddata in pairs(data) do
         log(LOG_NAME, "INFO", "%s received from Server.", commandid)
@@ -150,6 +165,15 @@ local function process_commands(asset, data, path)
     return 'ok'
 end
 
+--- Adjust the opening of the roof
+local function auto_adjust_roof()
+    local opening = AUTO_ADJUST_OFFSET
+    opening = opening + AUTO_ADJUST_COEF_TEMP * modbus_data_values['temperature']
+    opening = opening + AUTO_ADJUST_COEF_LUM  * modbus_data_values['luminosity']
+    if opening <  0  then opening =  0  end
+    if opening > 100 then opening = 100 end
+    modbus_client:writeMultipleRegisters (1, modbus_command_address['servoCommand'], string.pack('h', opening))
+end
 
 -- ----------------------------------------------------------------------------
 -- MAIN
@@ -172,12 +196,12 @@ local function main()
     log(LOG_NAME, "INFO", "Mihini asset - OK")
 
     av_table = av_asset :newTable('rawdata', {'timestamp', 'temperature', 'luminosity', 'humidity', 'servo'}, 'file', 'never')
-    local err
-    av_table_consolidated, err = av_table :newConsolidation('data', { timestamp='median', temperature='mean', luminosity='mean', humidity='mean', servo='last'}, 'file', 'everyminute', 'every15minutes')
+    local conso_err
+    av_table_consolidated, conso_err = av_table :newConsolidation('data', { timestamp='median', temperature='mean', luminosity='mean', humidity='mean', servo='last'}, 'file', 'everyminute', 'every15minutes')
 
 
     if not av_table_consolidated then
-        log(LOG_NAME, "ERROR", err)
+        log(LOG_NAME, "ERROR", conso_err)
     else
         log(LOG_NAME, "INFO", "Mihini table_consolidated - OK")
     end
@@ -187,6 +211,9 @@ local function main()
     sched.wait(2)
     while true do
         process_modbus()
+        if AUTO_ADJUST_ROOF then
+            auto_adjust_roof()
+        end
         sched.wait(10)
     end
 end
