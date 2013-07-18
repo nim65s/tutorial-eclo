@@ -250,11 +250,11 @@ print response.json()
 
 ```python
 if autoAdjust:
-    roof = servoCommand
-else:
     roof  = adjustOffset
     roof += adjustTemp * temperature
     roof += adjustLum  * luminosity
     roof += adjustHum  * Humidity
+else:
+    roof = servoCommand
 ```
 
