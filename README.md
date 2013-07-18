@@ -216,14 +216,17 @@ params['type'] = 'tutorial_eclo'
 app_uid = requests.get(SERVER_URL + 'api/v1/applications', params=params).json()['items'][0]['uid']
 ```
 
-* Then create a json-serialized dict with the data you want to POST:
+* Then create a json-serialized dict with the data you want to POST (in this example, we want to set manually the Servo's at 50°):
 
 ```python
 data = json.dumps({
     "application" : { "uid": app_uid },
     "systems" : { "uids": [sys_uid] },
-    "commandId": "greenhouse.data.servoCommand",
-    "parameters": { "servoCommand": 50}
+    "commandId": "greenhouse.data.roof",
+    "parameters": {
+        "autoAdjust": false,
+        "servoCommand": 50,
+        }
 })
 ```
 
@@ -241,4 +244,15 @@ operation_params = token_params.copy()
 operation_params['uid'] = r.json()['operation']
 response = requests.get(SERVER_URL + 'api/v1/operations', params=operation_params)
 print response.json()
+```
+
+* In this application, you can also change the parameters which govern the auto-adjust equation of the roof:
+```python
+if autoAdjust:
+    roof = servoCommand
+else:
+    roof  = adjustOffset
+    roof += adjustTemp * temperature
+    roof += adjustLum  * luminosity
+    roof += adjustHum  * Humidity
 ```
