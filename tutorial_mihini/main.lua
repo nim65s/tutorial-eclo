@@ -153,14 +153,9 @@ end
 
 --- Reacts to a request from AirVantage
 local function process_commands(asset, data, path)
-    log(LOG_NAME, "INFO", "data %s", data)
     for _, datas in pairs(data) do
-        log(LOG_NAME, "INFO", "datas %s", datas)
         for _, command in pairs(datas) do
-            log(LOG_NAME, "INFO", "command %s", command)
             for parameter, value in pairs(command) do
-                log(LOG_NAME, "INFO", "parameter %s", parameter)
-                log(LOG_NAME, "INFO", "value %s", value)
                 if parameters[parameter] then
                     parameters[parameter] = value
                 else
