@@ -19,7 +19,6 @@ local sched  = require 'sched'
 local modbus = require 'modbus'
 -- Modbus Stub module to test the demo without modbus device.
 --local modbus = require 'stub.modbus'
-local utils  = require 'utils'
 local tableutils = require "utils.table"
 local airvantage = require 'airvantage'
 
@@ -35,12 +34,6 @@ local LOG_NAME = "GREENHOUSE_APP"
 -- PARAMETERS
 -- ----------------------------------------------------------------------------
 local parameters = { -- TODO: Load from persist
-    servoCommand = 0,
-    autoAdjust = true,
-    adjustOffset = 0,
-    adjustTemp = 1,
-    adjustLum = 1,
-    adjustHum= 1,
     consolidate = false,
 }
 
@@ -56,13 +49,6 @@ local av_table_consolidated
 -- ----------------------------------------------------------------------------
 -- DATA
 -- ----------------------------------------------------------------------------
-local modbus_data_values = { -- TODO: Load from persist
-    temperature = 0,
-    luminosity  = 0,
-    humidity    = 0,
-    btn         = 0,
-    servo       = 0,
-}
 local modbus_data_address = {
     temperature = 0,
     luminosity  = 1,
@@ -70,17 +56,14 @@ local modbus_data_address = {
     btn         = 3,
     servo       = 4,
 }
-local modbus_data_process = {
-    temperature = utils.processTemperature,
-    luminosity  = utils.processLuminosity,
-    humidity    = utils.processHumidity,
-    btn         = utils.identity,
-    servo       = utils.identity,
-}
-setmetatable(modbus_data_process, {__index = function (_, _) return utils.identity end})
 
 local modbus_command_address = {
     servoCommand = 5,
+    autoAdjust   = 6,
+    adjustOffset = 7,
+    adjustTemp   = 8,
+    adjustLum    = 9,
+    adjustHum    = 10,
 }
 
 -- ----------------------------------------------------------------------------
@@ -98,6 +81,18 @@ local function init_modbus()
     modbus_client_pending_init = false
 end
 
+--- Read a register
+function convertRegister(value, address)
+    local low = string.byte(value,2*(address + 1) - 1)
+    local high = string.byte(value,2*(address + 1))
+    local f = function() end
+    local endianness = string.byte(string.dump(f),7)
+    if(endianness == 1) then
+        return high*256+low
+    else
+        return low*256+high
+    end
+end
 
 --- Read Modbus Register and send it to Server
 local function process_modbus ()
@@ -117,22 +112,21 @@ local function process_modbus ()
         return
     end
 
-    local sval, val    -- value from sensor, data value computed from the sensor value
     local buffer = {}
 
     for data, address in pairs(modbus_data_address) do
-        sval = utils.convertRegister(values, address)
-        val = modbus_data_process[data](sval)
-        log(LOG_NAME, "INFO", "Read from modbus %s : (%s, %s).", data, tostring(val), tostring(sval))
-        modbus_data_values[data] = val
+        local val = convertRegister(values, address)
+        log(LOG_NAME, "INFO", "Read from modbus %s : %f.", data, val)
         buffer[data] = val
     end
 
     if buffer['btn'] == 1 then
         buffer['btn'] = true
-        buffer.timestamp=os.time()
-        log(LOG_NAME, 'INFO', "Button pushed ; Sending to Server. Date=%s", tostring(buffer.timestamp))
-        av_asset :pushdata ('data', buffer, 'now')
+        if parameters['consolidate'] then
+            buffer.timestamp=os.time()
+            log(LOG_NAME, 'INFO', "Button pushed ; Sending to Server. Date=%s", tostring(buffer.timestamp))
+            av_asset :pushdata ('data', buffer, 'now')
+        end
         modbus_client:writeMultipleRegisters (1, modbus_data_address['btn'], string.pack('h', 0))
     else
         buffer['btn'] = false
@@ -158,6 +152,13 @@ local function process_commands(asset, data, path)
             for parameter, value in pairs(command) do
                 if parameters[parameter] then
                     parameters[parameter] = value
+                elseif modbus_command_address[parameter] then
+                    if value == true then
+                        value = 1
+                    elseif value == false then
+                        value = 0
+                    end
+                    modbus_client:writeMultipleRegisters (1, modbus_command_address[parameter], string.pack('h', value))
                 else
                     log(LOG_NAME, "INFO", "parameter '%s' unknown (value '%s')", parameter, value)
                 end
@@ -165,20 +166,6 @@ local function process_commands(asset, data, path)
         end
     end
     return 'ok'
-end
-
---- Adjust the opening of the roof
-local function adjust_roof()
-    local opening = parameters['servoCommand']
-    if parameters['autoAdjust'] then
-        opening = parameters['adjustOffset']
-        opening = opening + parameters['adjustTemp'] * modbus_data_values['temperature']
-        opening = opening + parameters['adjustLum']  * modbus_data_values['luminosity']
-        opening = opening + parameters['adjustHum']  * modbus_data_values['humidity']
-    end
-    if opening <  0  then opening =  0  end
-    if opening > 100 then opening = 100 end
-    modbus_client:writeMultipleRegisters (1, modbus_command_address['servoCommand'], string.pack('h', opening))
 end
 
 -- ----------------------------------------------------------------------------
@@ -203,13 +190,14 @@ local function main()
 
     av_table = av_asset :newTable('rawdata', {'timestamp', 'temperature', 'luminosity', 'humidity', 'servo'}, 'file', 'never')
     local conso_err
-    av_table_consolidated, conso_err = av_table :newConsolidation('data', { timestamp='median', temperature='mean', luminosity='mean', humidity='mean', servo='last'}, 'file', 'everyminute', 'every15minutes')
+    av_table_consolidated, conso_err = av_table :newConsolidation('data',
+        { timestamp='median', temperature='mean', luminosity='mean', humidity='mean', servo='last'},
+        'file', 'everyminute', 'every15minutes')
 
-
-    if not av_table_consolidated then
-        log(LOG_NAME, "ERROR", conso_err)
+    if av_table_consolidated then
+        log(LOG_NAME, "INFO", "Mihini table - OK")
     else
-        log(LOG_NAME, "INFO", "Mihini table_consolidated - OK")
+        log(LOG_NAME, "ERROR", "Mihini table consolidated: %s", conso_err)
     end
 
     log(LOG_NAME, "INFO", "Init done")
@@ -217,8 +205,7 @@ local function main()
     sched.wait(2)
     while true do
         process_modbus()
-        adjust_roof()
-        sched.wait(300)
+        sched.wait(29)
     end
 end
 

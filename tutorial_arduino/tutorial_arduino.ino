@@ -1,5 +1,6 @@
 #include <SimpleModbusSlave.h>
 #include <Servo.h>
+#include <Math.h>
 
 // Using the enum instruction allows for an easy method for adding and
 // removing registers. Doing it this way saves you #defining the size
@@ -17,6 +18,11 @@ enum
   BUTTON,       // @ 3
   SERVOANGLE,   // @ 4
   SERVOCOMMAND, // @ 5
+  AUTOADJUST,   // @ 6
+  ADJUSTOFFSET, // @ 7
+  ADJUSTTEMP,   // @ 8
+  ADJUSTLUM,    // @ 9
+  ADJUSTHUM,    // @ 10
 
   TOTAL_ERRORS,
   // leave this one
@@ -45,6 +51,24 @@ void setup()
   Serial.println("Ready") ;
 }
 
+int processTemperature(int value)
+{
+    double val = value;
+    return 1/(log((1023-val)/val)/3975 + 1/298.14)-273.15;
+}
+
+int processHumidity(int value)
+{
+    if (value < 400) return 0;
+    return (value - 300) / 4.5;
+}
+
+int processLuminosity(int value)
+{
+    float vsensor = value * 0.0048828125;
+    return 500 / ( 10 * ( (5 - vsensor) / vsensor ));
+}
+
 void loop()
 {
   // modbus_update() is the only method used in loop(). It returns the total error
@@ -52,21 +76,28 @@ void loop()
   // for fault finding by the modbus master.
   holdingRegs[TOTAL_ERRORS] = modbus_update(holdingRegs);
 
-  // Temperature, Luminosty & humitidy
-  for (byte i = 0; i < 3; i++)
-  {
-    holdingRegs[i] = analogRead(i);
-    delay(10);
-  }
+  // Temperature, Luminosity & humidity
+  holdingRegs[TEMPERATURE] = processTemperature(analogRead(TEMPERATURE));
+  holdingRegs[LUMINOSITY]  = processLuminosity(analogRead(LUMINOSITY));
+  holdingRegs[HUMIDITY]    = processHumidity(analogRead(HUMIDITY));
 
   // Button
-  if (digitalRead(12) == HIGH) holdingRegs[3] = 1;
+  if (digitalRead(12) == HIGH) holdingRegs[BUTTON] = 1;
 
   // servo
-  holdingRegs[4] = myservo.read();
-  delay(10);
-  myservo.write(holdingRegs[5]);
-  delay(10);
+  float servo;
+  if (!holdingRegs[AUTOADJUST]) servo = holdingRegs[SERVOCOMMAND];
+  else
+  {
+      servo  = holdingRegs[ADJUSTOFFSET];
+      servo += holdingRegs[ADJUSTTEMP] * holdingRegs[TEMPERATURE];
+      servo += holdingRegs[ADJUSTLUM]  * holdingRegs[LUMINOSITY];
+      servo += holdingRegs[ADJUSTHUM]  * holdingRegs[HUMIDITY];
+  }
+  if (servo <  0 ) servo =  0 ;
+  if (servo > 100) servo = 100;
+  myservo.write(servo);
+  holdingRegs[SERVOANGLE] = myservo.read();
 }
 
 // vim:set ft=c:
