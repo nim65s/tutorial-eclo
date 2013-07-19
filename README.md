@@ -224,7 +224,7 @@ data = json.dumps({
     "systems" : { "uids": [sys_uid] },
     "commandId": "greenhouse.data.roof",
     "parameters": {
-        "autoAdjust": false,
+        "autoAdjust": False,
         "servoCommand": 50,
         }
 })
